@@ -1,0 +1,46 @@
+﻿@model List<GithubAPI_WorkingHour.Models.RepositoryModel>
+@{
+    ViewData["Title"] = "Repolar";
+}
+
+
+
+<div class="container-fluid px-6 py-4">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>Repo Name</th>
+                        <th>Toplam Çalışma Süresi</th>
+                        @foreach (var item in Model)
+                        {
+                            foreach (var issue in item.RepositoryWorkingDays)
+                            {
+                                <th>@issue.Date.ToShortDateString()</th>
+                            }
+
+
+
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Repository.Name</td>
+                            <td>@item.TotalWorkingHour</td>
+                            @foreach (var issue in item.RepositoryWorkingDays)
+                            {
+                                <th>@issue.TotalWorkingHour</th>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
