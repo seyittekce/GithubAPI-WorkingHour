@@ -1,7 +1,5 @@
-﻿using Core.Entites;
-using System.Collections.Generic;
-
-namespace GithubAPI_WorkingHour.Models
+﻿using System.Collections.Generic;
+namespace Core.Entites
 {
     public class RepositoryModel
     {

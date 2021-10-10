@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Octokit;
 using System;
 using System.Threading.Tasks;
+
 namespace GithubAPI_WorkingHour.Controllers
 {
     public class AccountController : Controller
@@ -13,16 +14,16 @@ namespace GithubAPI_WorkingHour.Controllers
         private readonly IOptions<GithubApiKeys> keys;
         private readonly IGitHubClient client;
         private readonly IPassword password;
+
         public AccountController(IOptions<GithubApiKeys> config, IGitHubClient client, IPassword password)
         {
             this.keys = config;
             this.client = client;
             this.password = password;
-           
         }
+
         public async Task<IActionResult> IndexAsync()
         {
-            
             var accessToken = HttpContext.Session.GetString("OAuthToken");
             if (accessToken != null)
             {
@@ -37,8 +38,8 @@ namespace GithubAPI_WorkingHour.Controllers
             {
                 return Redirect(GetOauthLoginUrl());
             }
-            
         }
+
         public async Task<IActionResult> Authorize(string code, string state)
         {
             if (!String.IsNullOrEmpty(code))
@@ -52,6 +53,7 @@ namespace GithubAPI_WorkingHour.Controllers
             }
             return RedirectToAction("Index");
         }
+
         private string GetOauthLoginUrl()
         {
             string csrf = password.Generate(24, 1);

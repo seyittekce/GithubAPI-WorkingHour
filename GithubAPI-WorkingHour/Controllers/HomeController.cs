@@ -6,10 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Octokit;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GithubAPI_WorkingHour.Controllers
@@ -19,19 +15,20 @@ namespace GithubAPI_WorkingHour.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IOptions<GithubApiKeys> keys;
         private readonly IGitHubClient client;
+
         public HomeController(ILogger<HomeController> logger, IGitHubClient client, IOptions<GithubApiKeys> keys)
         {
             _logger = logger;
             this.client = client;
             this.keys = keys;
-          
         }
+
         public async Task<IActionResult> Index()
         {
             this.client.Connection.Credentials = new Credentials(HttpContext.Session.GetString("OAuthToken"));
-       
-            var user =await client.User.Current();
-            return View(new IndexModel {User=user });
+
+            var user = await client.User.Current();
+            return View(new IndexModel { User = user });
         }
 
         public IActionResult Privacy()

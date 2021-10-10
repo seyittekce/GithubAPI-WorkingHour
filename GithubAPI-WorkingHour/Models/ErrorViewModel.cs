@@ -1,5 +1,3 @@
-using System;
-
 namespace GithubAPI_WorkingHour.Models
 {
     public class ErrorViewModel

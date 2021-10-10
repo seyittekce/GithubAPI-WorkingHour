@@ -15,7 +15,10 @@
     <link rel="stylesheet" href="~/libs/dropzone/dist/dropzone.css">
     <link href="~/libs/@@mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="~/css/theme.min.css">
+
     <script src="~/libs/jquery/dist/jquery.min.js"></script>
     <script src="~/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/libs/jquery-slimscroll/jquery.slimscroll.min.js"></script>
@@ -26,6 +29,8 @@
     <script src="~/libs/apexcharts/dist/apexcharts.min.js"></script>
     <script src="~/libs/dropzone/dist/min/dropzone.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/theme.min.js"></script>
     <title>@ViewBag.Title | Infoline</title>
 </head>
@@ -46,7 +51,7 @@
                     <li class="nav-item">
                         <div class="navbar-heading">Sayfalar</div>
                     </li>
-                      <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link has-arrow  active " href="@Url.Action("Index","Repository")">
                             <i data-feather="home" class="nav-icon icon-xs me-2"></i>  Repositories
                         </a>
@@ -61,10 +66,10 @@
                         <i data-feather="menu"
                            class="nav-icon me-2 icon-xs"></i>
                     </a>
-                   
+
                     <!--Navbar nav -->
                     <ul class="navbar-nav navbar-right-wrap ms-auto d-flex nav-top-wrap">
-                    
+
                         <!-- List -->
                         <li class="dropdown ms-2">
                             <a class="rounded-circle" href="#" role="button" id="dropdownUser"
@@ -83,13 +88,12 @@
                                     </div>
                                     <div class=" dropdown-divider mt-3 mb-2"></div>
                                 </div>
-                                
                             </div>
                         </li>
                     </ul>
                 </nav>
             </div>
-            @RenderBody();
+            @RenderBody()
         </div>
     </div>
 </body>

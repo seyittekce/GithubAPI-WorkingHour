@@ -3,15 +3,11 @@ using Core.Abstracts;
 using Core.Concrete;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Octokit;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GithubAPI_WorkingHour
 {
@@ -39,7 +35,6 @@ namespace GithubAPI_WorkingHour
             });
             services.AddControllersWithViews()
                .AddRazorRuntimeCompilation();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

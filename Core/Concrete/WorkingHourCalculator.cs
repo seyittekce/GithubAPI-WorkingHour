@@ -4,9 +4,7 @@ using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Core.Concrete
 {
@@ -16,13 +14,11 @@ namespace Core.Concrete
         {
             return comments.GroupBy(x => x.CreatedAt.Date).Select(a => new RepositoryWorkingDays
             {
-
                 TotalWorkingHour = CalculateTotal(a.ToList()),
                 Date = a.Key.Date
             }).ToList();
-
-
         }
+
         public string CalculateTotal(IEnumerable<IssueComment> comments)
         {
             Regex regex = new Regex("\\{[^}]*\\}", RegexOptions.IgnoreCase);

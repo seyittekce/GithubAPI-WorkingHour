@@ -1,10 +1,6 @@
 ﻿using Core.Abstracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Concrete
 {
@@ -12,7 +8,7 @@ namespace Core.Concrete
     {
         private static readonly char[] Punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
-        public  string Generate(int length, int numberOfNonAlphanumericCharacters)
+        public string Generate(int length, int numberOfNonAlphanumericCharacters)
         {
             if (length < 1 || length > 128)
             {
@@ -79,6 +75,5 @@ namespace Core.Concrete
                 return new string(characterBuffer);
             }
         }
-
     }
 }
