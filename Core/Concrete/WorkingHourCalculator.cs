@@ -1,24 +1,27 @@
-﻿using Core.Abstracts;
-using Core.Entites;
+﻿ using Core.Abstracts;
+
 using Octokit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+ using Core.Entities;
 
-namespace Core.Concrete
+ namespace Core.Concrete
 {
     public class WorkingHourCalculator : IWorkingHourCalculator
     {
         public List<RepositoryWorkingDays> CalculateDayByDay(IEnumerable<IssueComment> comments)
         {
-            return comments.GroupBy(x => x.CreatedAt.Date).Select(a => new RepositoryWorkingDays
+            var issueComments = comments.ToList();
+            
+            var comDaysList = issueComments.GroupBy(x => x.CreatedAt.Date).Select(a => new RepositoryWorkingDays
             {
                 TotalWorkingHour = CalculateTotal(a.ToList()),
                 Date = a.Key.Date
-            }).ToList();
+            }).OrderByDescending(x=>x.Date).ToList();
+            return comDaysList;
         }
-
         public string CalculateTotal(IEnumerable<IssueComment> comments)
         {
             Regex regex = new Regex("\\{[^}]*\\}", RegexOptions.IgnoreCase);

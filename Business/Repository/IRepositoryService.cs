@@ -1,14 +1,15 @@
-﻿using Core.Entites;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Core.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace Business.Repository
 {
     public interface IRepositoryService
     {
-        Task<List<RepositoryModel>> RepositoryWorkingDaysAsync();
+        Task<RepositoryModelWithMaxLength> RepositoryWorkingDaysAsync();
 
 
     }

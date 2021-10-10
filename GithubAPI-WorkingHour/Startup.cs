@@ -1,13 +1,18 @@
+using Business.Repository;
 using Core;
 using Core.Abstracts;
 using Core.Concrete;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Octokit;
 using System;
+using System.Net.Http;
+using Business.User;
+using Newtonsoft.Json;
 
 namespace GithubAPI_WorkingHour
 {
@@ -24,8 +29,11 @@ namespace GithubAPI_WorkingHour
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IGitHubClient>(s => new GitHubClient(new ProductHeaderValue("Test")));
+            services.AddTransient<IRepositoryService, RepositoryManager>();
+            services.AddTransient<IUserService, UserManager>();
             services.AddSingleton<IPassword, Password>();
             services.AddSingleton<IWorkingHourCalculator, WorkingHourCalculator>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<GithubApiKeys>(Configuration.GetSection("GithubApi"));
             services.AddSession(options =>
             {
@@ -34,7 +42,7 @@ namespace GithubAPI_WorkingHour
                 options.Cookie.IsEssential = true;
             });
             services.AddControllersWithViews()
-               .AddRazorRuntimeCompilation();
+                .AddRazorRuntimeCompilation().AddNewtonsoftJson(opt=>opt.SerializerSettings.ReferenceLoopHandling=ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

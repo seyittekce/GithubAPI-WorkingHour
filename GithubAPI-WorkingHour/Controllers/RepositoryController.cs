@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using Business.Repository;
+using Business.User;
 
 
 namespace GithubAPI_WorkingHour.Controllers
@@ -16,17 +17,20 @@ namespace GithubAPI_WorkingHour.Controllers
     public class RepositoryController : Controller
     {
         private readonly IRepositoryService _repositoryService;
-        public RepositoryController(IRepositoryService repositoryService)
+        private readonly IUserService _userService;
+        public RepositoryController(IRepositoryService repositoryService, IUserService userService)
         {
             _repositoryService = repositoryService;
+            _userService = userService;
         }
-        public IActionResult Index()
+        public async  Task<IActionResult> Index()
         {
-            return View();
+            return View(await _repositoryService.RepositoryWorkingDaysAsync());
         }
-        public IActionResult IndexDataSource()
+       
+        public async Task<IActionResult> GetRepositoryWorkingHourWithUser(string owner, string name)
         {
-            return Json(_repositoryService.RepositoryWorkingDaysAsync(),new JsonSerializerOptions{WriteIndented = true});
+            return View(await _userService.GetRepositoryHourWithUsers(owner, name));
         }
     }
 }

@@ -1,5 +1,6 @@
-﻿using Core.Entites;
+﻿
 using System.Collections.Generic;
+using Core.Entities;
 
 namespace GithubAPI_WorkingHour.Models
 {
