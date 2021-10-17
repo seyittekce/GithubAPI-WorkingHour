@@ -6,9 +6,8 @@ namespace Core.Abstracts
 {
     public interface IWorkingHourCalculator
     {
-        string CalculateTotal(IEnumerable<IssueComment> issue);
+        int CalculateTotal(IssueComment issue);
 
-        List<RepositoryWorkingDays> CalculateDayByDay(IEnumerable<IssueComment> comments);
        
     }
 }

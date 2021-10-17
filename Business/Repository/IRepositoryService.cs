@@ -9,7 +9,7 @@ namespace Business.Repository
 {
     public interface IRepositoryService
     {
-        Task<RepositoryModelWithMaxLength> RepositoryWorkingDaysAsync();
+        Task<RepositoryModelWithDates> RepositoryWorkingDaysAsync(DateTime? startDate,DateTime? endDate);
 
 
     }

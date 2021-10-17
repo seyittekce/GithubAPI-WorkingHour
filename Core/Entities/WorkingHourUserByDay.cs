@@ -10,6 +10,7 @@ namespace Core.Entities
         public User User { get; set; }
         public IEnumerable<RepositoryWorkingDays> RepositoryWorkingDays { get; set; }
         public string Total { get; set; }
+        public string UserName { get; set; }
         
     }
 }

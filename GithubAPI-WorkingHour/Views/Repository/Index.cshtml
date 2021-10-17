@@ -1,42 +1,70 @@
-﻿@model Core.Entities.RepositoryModelWithMaxLength
+﻿@using Microsoft.AspNetCore.Http
+@model Core.Entities.RepositoryModelWithDates
 @{
-    ViewData["Title"] = "Repolar";
+    ViewData["Title"] = "Repositoriler";
 }
 <div class="container-fluid px-6 py-4">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
             <div class="card">
                 <div class="card-body">
-                    <table class="table table-responsive table-hover" id="repoTable" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Repository Adı</th>
-                                <th>Toplam Çalışma Saati</th>   
-                                @foreach (var model in Model.Repository)
-                                {
-                                    @foreach (var dates in model.RepositoryWorkingDays)
-                                    {
-                                        <th>@dates.Date.Date.ToShortDateString()</th>
-                                    }
-                                }
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var repository in Model.Repository)
-                            {
+                    <form method="get" action="/Repository/Index">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="float-end">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="startDate">Başlangıç Tarihi</label>
+                                                <input type="date" id="startDate" name="startDate" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="endDate">Bitiş Tarihi</label>
+                                                <input type="date" min="" name="endDate" id="endDate" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="submit" id="filterButton" style="margin-top: 28px;" class="btn btn-primary">Filtrele</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table  table-hover" id="repoTable" style="width:100%">
+                            <thead>
                                 <tr>
-                                    <td><a href="@Url.Action("GetRepositoryWorkingHourWithUser","Repository",new {name=repository.Name,owner=repository.Owner})">@repository.Name</a></td>
-                                    <td>@repository.TotalWorkingHour</td>
-                                   
-                                        @foreach (var dates in repository.RepositoryWorkingDays)
-                                        {
-                                            <td>@dates.TotalWorkingHour</td>
-                                        }
-
+                                    <th>Repository Adı</th>
+                                    <th>Toplam Çalışma Saati</th>
+                                    @foreach (var date in Model.Dates.OrderBy(x => x.Date.Date))
+                                    {
+                                        <th data-date="@date.ToShortDateString()">@date.ToShortDateString()</th>
+                                    }
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var repositories in Model.Repository)
+                                {
+                                    <tr>
+                                        <th><a href="@repositories.Repository.HtmlUrl">@repositories.Repository.Name</a></th>
+                                        <th>@repositories.TotalWorkingHour</th>
+                                        @foreach (var datesWithWorkingHour in repositories.RepositoryWorkingDays.OrderBy(x => x.Date.Date))
+                                        {
+                                            <th>
+                                                @{
+                                                    var date = new TimeSpan(0, datesWithWorkingHour.TotalWorkingMinutes, 0);
+                                                }
+                                                @string.Format("{0:00}  {1:00}", (int)date.TotalHours, date.Minutes)
+                                            </th>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -44,6 +72,10 @@
 </div>
 @section scripts{
 <script>
-    $('#repoTable').DataTable();
+    var table = $('#repoTable').DataTable();
+    $("#startDate").change(function(){
+        var getMin=$(this).val();
+         $("#endDate").attr("min",getMin);
+    });
 </script>
 }

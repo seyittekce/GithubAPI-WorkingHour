@@ -3,7 +3,7 @@ namespace Core.Entities
 {
     public class RepositoryWorkingDays
     {
-        public string TotalWorkingHour { get; set; } ="";
+        public int TotalWorkingMinutes { get; set; } =0;
         public DateTime Date { get; set; } = new();
     }
 }

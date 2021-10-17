@@ -23,9 +23,9 @@ namespace GithubAPI_WorkingHour.Controllers
             _repositoryService = repositoryService;
             _userService = userService;
         }
-        public async  Task<IActionResult> Index()
+        public async  Task<IActionResult> Index(DateTime? startDate,DateTime? endDate)
         {
-            return View(await _repositoryService.RepositoryWorkingDaysAsync());
+            return View(await _repositoryService.RepositoryWorkingDaysAsync(startDate,endDate));
         }
        
         public async Task<IActionResult> GetRepositoryWorkingHourWithUser(string owner, string name)

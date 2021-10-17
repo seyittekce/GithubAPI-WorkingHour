@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Core.Abstracts;
 using Core.Entities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.VisualBasic;
 using Octokit;
 namespace Business.User
 {
@@ -19,33 +18,28 @@ namespace Business.User
             _workingHourCalculator = workingHourCalculator;
             _httpContext = httpContext;
         }
-        public async Task<GetRepositoryHourWithUserModel> GetRepositoryHourWithUsers(string owner, string repoName)
+        public async Task<List<IGrouping<string,GetRepoWithUser>>> GetRepositoryHourWithUsers(string owner, string repoName)
         {
             var token = _httpContext.HttpContext.Session.GetString("OAuthToken");
             _client.Connection.Credentials = new Credentials(token);
             var getRepo = await _client.Repository.Get(owner, repoName);
-            var getIssue = await _client.Issue.GetAllForRepository(owner, repoName);
-          
-            var getIssueComment =await _client.Issue.Comment.GetAllForRepository(owner,repoName);
-            var selectIssueComment = getIssueComment.Select(x => new WorkingHourUserByDay
+            var getrepoList = new List<GetRepoWithUser>();
+            var getIssue = await _client.Issue.Comment.GetAllForRepository(owner, repoName);
+            foreach (var issue in getIssue)
             {
-                User = x.User,
-                RepositoryWorkingDays = _workingHourCalculator.CalculateDayByDay(new List<IssueComment> {x}).ToList(),
-                Total = _workingHourCalculator.CalculateTotal(new List<IssueComment> {x})
-            }).GroupBy(x => x.User.Login);
-                
-            {
-                var returning = new GetRepositoryHourWithUserModel
+                getrepoList.Add(new GetRepoWithUser
                 {
+                    User = issue.User,
+                    Date = issue.CreatedAt.Date,
                     Repository = getRepo,
-                    WorkingHourUser = selectIssueComment
-
-                };
-               
-              
-                return returning;
+                    UserName = issue.User.Login,
+                    WorkingHour =_workingHourCalculator.CalculateTotal(issue) 
+                });
             }
-            return new GetRepositoryHourWithUserModel();
+
+            var ss = getrepoList.GroupBy(x => x.UserName).ToList();
+
+            return ss;
         }
     }
 }
