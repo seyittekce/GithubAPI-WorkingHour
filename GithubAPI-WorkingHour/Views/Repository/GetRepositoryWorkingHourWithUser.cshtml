@@ -1,60 +1,81 @@
-﻿@model List<IGrouping<string,Core.Entities.GetRepoWithUser>>
+﻿@using Core.Entities
+@model UserModelForRepositoryWithDates
 @{
-    ViewData["Title"] = "Repolar";
+    ViewData["Title"] = Model.Repository.Name;
 }
 <div class="container-fluid px-6 py-4">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4 >
-                        @{
-                            Core.Entities.GetRepoWithUser first = null;
-                            foreach (var user in Model.Select(x => x.ToList()).FirstOrDefault())
-                            {
-                                first = user;
-                                break;
-                            }
-                        }
-                        @first.Repository.Name
-                    </h4>
+                    <h4><a href="@Model.Repository.HtmlUrl">@Model.Repository.Name</a></h4>
                 </div>
                 <div class="card-body">
-                    <table class="table table-responsive" id="repoTable" style="width: 100%">
-                        <thead>
-                        <tr>
-
-                            <th>Kullancıcı Adı</th>
-                            <th>Toplam Çalışma Saati</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <th class="">
-                                    <div class="d-flex  align-items-center">
-                                        <div>
-                                            <div class="icon-shape icon-md border p-4 rounded bg-primary">
-                                                <img width="40" height="40" src="@item.FirstOrDefault(x => x.UserName == item.Key).User.AvatarUrl" alt="">
+                    <form method="get" action="/Repository/GetRepositoryWorkingHourWithUser">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="float-end">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <input type="hidden" name="owner" value="@Model.Repository.Owner.Login" />
+                                            <input type="hidden" name="name" value="@Model.Repository.Name" />
+                                            <div class="mb-3">
+                                                <label class="form-label" for="startDate">Başlangıç Tarihi</label>
+                                                <input type="date" id="startDate" name="startDate" class="form-control">
                                             </div>
                                         </div>
-                                        <div class="ms-3 lh-1">
-                                            <h5 class="fw-bold mb-1">
-                                                <a href="@item.FirstOrDefault(x => x.UserName == item.Key).User.HtmlUrl" class="text-inherit">@item.Key</a>
-                                            </h5>
+                                        <div class="col-auto">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="endDate">Bitiş Tarihi</label>
+                                                <input type="date" min="" name="endDate" id="endDate" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="submit" id="filterButton" style="margin-top: 28px;" class="btn btn-primary">Filtrele</button>
                                         </div>
                                     </div>
-                                </th>
-                                @{
-                                    var calcMunites = TimeSpan.FromMinutes(item.ToList().Sum(x => x.WorkingHour));
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-responsive" id="repoTable" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>Kullancıcı Adı</th>
+                                    <th>Toplam Çalışma Saati</th>
+                                    @foreach (var item in Model.Dates.OrderBy(x => x.Date))
+                                    {
+                                        <th>@item.ToShortDateString()</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.UserWorkingHours)
+                                {
+                                    <tr>
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <img src="@item.User.AvatarUrl" alt="" class="avatar-md avatar rounded-circle">
+                                                </div>
+                                                <div class="ms-3 lh-1">
+                                                    <h5 class="fw-bold mb-1">@item.User.Login</h5>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>@item.TotalWorkingHour</td>
+                                        @foreach (var dates in item.RepositoryWorkingDays.OrderBy(x => x.Date))
+                                        {
+                                            var date = new TimeSpan(0, dates.TotalWorkingMinutes, 0);
+                                            <td> @string.Format("{0:00}  {1:00}", (int)date.TotalHours, date.Minutes)</td>
+                                        }
+                                    </tr>
                                 }
+                            </tbody>
+                        </table>
+                    </div>
 
-                                <th>@Html.Raw(string.Format("{0:00} Saat {1:00} Dakika", (int) calcMunites.TotalHours, calcMunites.Minutes))</th>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>

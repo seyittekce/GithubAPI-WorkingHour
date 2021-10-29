@@ -1,6 +1,4 @@
 ﻿using Octokit;
-using System.Collections.Generic;
-using Core.Entities;
 
 namespace Core.Abstracts
 {
@@ -8,6 +6,6 @@ namespace Core.Abstracts
     {
         int CalculateTotal(IssueComment issue);
 
-       
+
     }
 }

@@ -1,22 +1,23 @@
-﻿@using Microsoft.AspNetCore.Http
-@model Core.Entities.RepositoryModelWithDates
+﻿@using Core.Entities
+@model UserModelWithDates
 @{
-    ViewData["Title"] = "Repositoriler";
+    ViewData["Title"] ="Tüm Kullanıcılar";
 }
 <div class="container-fluid px-6 py-4">
     <div class="row">
         <div class="col-lg-12 col-md-12 col-12">
             <div class="card">
                 <div class="card-header">
-                    <h4>Tüm Repositoriler</h4>
+                    <h4>Tüm Geliştiriciler</h4>
                 </div>
                 <div class="card-body">
-                    <form method="get" action="/Repository/Index">
+                    <form method="get" action="/User/Index">
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="float-end">
                                     <div class="row">
                                         <div class="col-auto">
+                                          
                                             <div class="mb-3">
                                                 <label class="form-label" for="startDate">Başlangıç Tarihi</label>
                                                 <input type="date" id="startDate" name="startDate" class="form-control">
@@ -37,37 +38,43 @@
                         </div>
                     </form>
                     <div class="table-responsive">
-                        <table class="table  table-hover" id="repoTable" style="width:100%">
+                        <table class="table table-responsive" id="repoTable" style="width: 100%">
                             <thead>
                                 <tr>
-                                    <th>Repository Adı</th>
+                                    <th>Kullancıcı Adı</th>
                                     <th>Toplam Çalışma Saati</th>
-                                    @foreach (var date in Model.Dates.OrderBy(x => x.Date.Date))
+                                    @foreach (var item in Model.Dates.OrderBy(x => x.Date))
                                     {
-                                        <th data-date="@date.ToShortDateString()">@date.ToShortDateString()</th>
+                                        <th>@item.ToShortDateString()</th>
                                     }
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var repositories in Model.Repository)
+                                @foreach (var item in Model.User)
                                 {
                                     <tr>
-                                        <th><a href="/Repository/GetRepositoryWorkingHourWithUser?owner=@repositories.Repository.Owner.Login&name=@repositories.Repository.Name">@repositories.Repository.Name</a></th>
-                                        <th>@repositories.TotalWorkingHour</th>
-                                        @foreach (var datesWithWorkingHour in repositories.RepositoryWorkingDays.OrderBy(x => x.Date.Date))
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                <div>
+                                                    <img src="@item.User.AvatarUrl" alt="" class="avatar-md avatar rounded-circle">
+                                                </div>
+                                                <div class="ms-3 lh-1">
+                                                    <h5 class="fw-bold mb-1">@item.User.Login</h5>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>@item.TotalWorkingHour</td>
+                                        @foreach (var dates in item.RepositoryWorkingDays.OrderBy(x => x.Date))
                                         {
-                                            <th>
-                                                @{
-                                                    var date = new TimeSpan(0, datesWithWorkingHour.TotalWorkingMinutes, 0);
-                                                }
-                                                @string.Format("{0:00}  {1:00}", (int)date.TotalHours, date.Minutes)
-                                            </th>
+                                            var date = new TimeSpan(0, dates.TotalWorkingMinutes, 0);
+                                            <td> @string.Format("{0:00}  {1:00}", (int)date.TotalHours, date.Minutes)</td>
                                         }
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -75,10 +82,6 @@
 </div>
 @section scripts{
 <script>
-    var table = $('#repoTable').DataTable();
-    $("#startDate").change(function(){
-        var getMin=$(this).val();
-         $("#endDate").attr("min",getMin);
-    });
+    $('#repoTable').DataTable();
 </script>
 }

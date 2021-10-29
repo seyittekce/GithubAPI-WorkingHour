@@ -17,18 +17,18 @@ namespace GithubAPI_WorkingHour.Controllers
 
         public AccountController(IOptions<GithubApiKeys> config, IGitHubClient client, IPassword password)
         {
-            this.keys = config;
+            keys = config;
             this.client = client;
             this.password = password;
         }
 
         public async Task<IActionResult> IndexAsync()
         {
-            var accessToken = HttpContext.Session.GetString("OAuthToken");
+            string accessToken = HttpContext.Session.GetString("OAuthToken");
             if (accessToken != null)
             {
-                this.client.Connection.Credentials = new Credentials(HttpContext.Session.GetString("OAuthToken"));
-                var user = await client.User.Current();
+                client.Connection.Credentials = new Credentials(HttpContext.Session.GetString("OAuthToken"));
+                User user = await client.User.Current();
                 HttpContext.Session.SetString("avatar", user.AvatarUrl);
                 HttpContext.Session.SetString("name", user.Name);
                 HttpContext.Session.SetString("githubUrl", user.HtmlUrl);
@@ -42,12 +42,16 @@ namespace GithubAPI_WorkingHour.Controllers
 
         public async Task<IActionResult> Authorize(string code, string state)
         {
-            if (!String.IsNullOrEmpty(code))
+            if (!string.IsNullOrEmpty(code))
             {
-                var expectedState = HttpContext.Session.GetString("CSRF:State");
-                if (state != expectedState) throw new InvalidOperationException("SECURITY FAIL!");
+                string expectedState = HttpContext.Session.GetString("CSRF:State");
+                if (state != expectedState)
+                {
+                    throw new InvalidOperationException("SECURITY FAIL!");
+                }
+
                 HttpContext.Session.Remove("CSRF:State");
-                var token = await client.Oauth.CreateAccessToken(
+                OauthToken token = await client.Oauth.CreateAccessToken(
                     new OauthTokenRequest(keys.Value.ClientId, keys.Value.ClientSecret, code));
                 HttpContext.Session.SetString("OAuthToken", token.AccessToken);
             }
@@ -58,12 +62,12 @@ namespace GithubAPI_WorkingHour.Controllers
         {
             string csrf = password.Generate(24, 1);
             HttpContext.Session.SetString("CSRF:State", csrf);
-            var request = new OauthLoginRequest(keys.Value.ClientId)
+            OauthLoginRequest request = new OauthLoginRequest(keys.Value.ClientId)
             {
                 Scopes = { "user", "notifications" },
                 State = csrf
             };
-            var oauthLoginUrl = client.Oauth.GetGitHubLoginUrl(request);
+            Uri oauthLoginUrl = client.Oauth.GetGitHubLoginUrl(request);
             return oauthLoginUrl.ToString();
         }
     }

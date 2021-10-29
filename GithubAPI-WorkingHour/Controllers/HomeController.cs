@@ -25,9 +25,9 @@ namespace GithubAPI_WorkingHour.Controllers
 
         public async Task<IActionResult> Index()
         {
-            this.client.Connection.Credentials = new Credentials(HttpContext.Session.GetString("OAuthToken"));
+            client.Connection.Credentials = new Credentials(HttpContext.Session.GetString("OAuthToken"));
 
-            var user = await client.User.Current();
+            User user = await client.User.Current();
             return View(new IndexModel { User = user });
         }
 

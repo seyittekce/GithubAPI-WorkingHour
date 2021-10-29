@@ -20,18 +20,18 @@ namespace Core.Concrete
                 throw new ArgumentException(nameof(numberOfNonAlphanumericCharacters));
             }
 
-            using (var rng = RandomNumberGenerator.Create())
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
-                var byteBuffer = new byte[length];
+                byte[] byteBuffer = new byte[length];
 
                 rng.GetBytes(byteBuffer);
 
-                var count = 0;
-                var characterBuffer = new char[length];
+                int count = 0;
+                char[] characterBuffer = new char[length];
 
-                for (var iter = 0; iter < length; iter++)
+                for (int iter = 0; iter < length; iter++)
                 {
-                    var i = byteBuffer[iter] % 87;
+                    int i = byteBuffer[iter] % 87;
 
                     if (i < 10)
                     {
@@ -58,7 +58,7 @@ namespace Core.Concrete
                 }
 
                 int j;
-                var rand = new Random();
+                Random rand = new Random();
 
                 for (j = 0; j < numberOfNonAlphanumericCharacters - count; j++)
                 {

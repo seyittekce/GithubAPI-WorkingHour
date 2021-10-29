@@ -1,16 +1,8 @@
-﻿using System;
-using Core.Abstracts;
-using GithubAPI_WorkingHour.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Business.User;
+using Core.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Octokit;
-using System.Collections.Generic;
-using System.Text.Json;
+using System;
 using System.Threading.Tasks;
-using System.Web.Helpers;
-using Business.Repository;
-using Business.User;
-
 
 namespace GithubAPI_WorkingHour.Controllers
 {
@@ -23,14 +15,14 @@ namespace GithubAPI_WorkingHour.Controllers
             _repositoryService = repositoryService;
             _userService = userService;
         }
-        public async  Task<IActionResult> Index(DateTime? startDate,DateTime? endDate)
+        public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate)
         {
-            return View(await _repositoryService.RepositoryWorkingDaysAsync(startDate,endDate));
+            return View(await _repositoryService.RepositoryWorkingDaysAsync(startDate, endDate));
         }
-       
-        public async Task<IActionResult> GetRepositoryWorkingHourWithUser(string owner, string name)
+
+        public async Task<IActionResult> GetRepositoryWorkingHourWithUser(string owner, string name, DateTime? startDate, DateTime? endDate)
         {
-            return View(await _userService.GetRepositoryHourWithUsers(owner, name));
+            return View(await _userService.GetRepositoryHourWithUsers(owner, name, startDate, endDate));
         }
     }
 }
